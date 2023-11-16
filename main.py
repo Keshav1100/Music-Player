@@ -198,7 +198,7 @@ class Player(tk.Frame): # tk.frame -> similar to root
         if event is not None:
             self.current= self.list.curselection()[0]
             for i in range(len(self.playList)):
-                self.list.itemconfigure(i,fg="#262626",bg="#f5f5f5")
+                self.list.itemconfigure(i,fg="black",bg="#f5f5f5")
             # self.list.itemconfigure(self.current,bg="blue")
         mixer.music.load(self.playList[self.current])
         self.pause["image"] = play
