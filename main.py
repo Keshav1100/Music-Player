@@ -92,7 +92,7 @@ class Player(tk.Frame): # tk.frame -> similar to root
     def control_widget(self):
 
         # Mood Options
-        mood_options = ['Happy', 'Meditation', 'Sad', 'Energetic']
+        mood_options = ['Happy', 'Meditation', 'Sad', 'Energetic',"Custom"]
         self.selected_mood = tk.StringVar(self.controls)
         self.selected_mood.set(mood_options[0])  # Set the default mood
         self.selected_mood.trace('w', self.retrieve_songs)  # Call function when mood changes
@@ -173,25 +173,33 @@ class Player(tk.Frame): # tk.frame -> similar to root
         }
 
         selected_mood = self.selected_mood.get()
-
-        if selected_mood in mood_folders:
+        if selected_mood == 'Custom':
+            custom_folder = filedialog.askdirectory(title="Select Custom Folder")
+            if custom_folder:
+                directory = custom_folder
+            else:
+            # If the user cancels the selection, default to 'Happy'
+                directory = './Music/Happy'
+        elif selected_mood in mood_folders:
             directory = mood_folders[selected_mood]
+        else:
+            directory = './Music/Happy'
 
-            self.songList = []
-            for root_, dirs, files in os.walk(directory):
-                for file in files:
-                    if os.path.splitext(file)[1] == ".mp3":
-                        path = (root_ + "/" + file).replace('\\', "/")
-                        self.songList.append(path)
+        self.songList = []
+        for root_, dirs, files in os.walk(directory):
+            for file in files:
+                if os.path.splitext(file)[1] == ".mp3":
+                    path = (root_ + "/" + file).replace('\\', "/")
+                    self.songList.append(path)
 
-            with open("songList.dat", "wb") as f:
-                pickle.dump(self.songList, f)
+        with open("songList.dat", "wb") as f:
+            pickle.dump(self.songList, f)
 
-            self.playList = self.songList
-            self.list.delete(0, tk.END)
-            self.trackPlayList["text"] = f" Playlist - {len(self.playList)}"
-            self.enumerateSongs()
-            self.play_song()
+        self.playList = self.songList
+        self.list.delete(0, tk.END)
+        self.trackPlayList["text"] = f" Playlist - {len(self.playList)}"
+        self.enumerateSongs()
+        self.play_song()
     def pause_song(self):
         if not self.paused:
             self.paused = True
@@ -259,6 +267,10 @@ class Player(tk.Frame): # tk.frame -> similar to root
         return f"{minutes:02d}:{seconds:02d}"
 # Creating the main window
 root = tk.Tk()
+icon_path = "./Assets/logo.ico"
+# icon_image = tk.PhotoImage(file=icon_path)
+root.iconbitmap(default=icon_path)
+
 # Creating window dimensions
 root.geometry("700x500")
 # Creating window name
