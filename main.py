@@ -76,7 +76,7 @@ class Player(tk.Frame): # tk.frame -> similar to root
         self.controls.grid(row=1,column=0,pady = 10)
 
         # Song Position Slider
-        self.position_slider = tk.Scale(self.track, from_=0, to=100, orient=tk.HORIZONTAL, length=390, showvalue=0, sliderlength=15, label="Position")
+        self.position_slider = tk.Scale(self.track, from_=0, to=100, orient=tk.HORIZONTAL, length=390, showvalue=0, sliderlength=15, label="Time:")
         self.position_slider.grid(row=2, column=0)
     def track_widget(self):
         # Song Track Frame
@@ -247,19 +247,19 @@ class Player(tk.Frame): # tk.frame -> similar to root
         
         # Setting the slider range based on the song length
         song_length = mixer.Sound(self.playList[self.current]).get_length()
-        self.position_slider.config(to=song_length,label=f"0:00 / {self.format_time(song_length)}")
+        self.position_slider.config(to=song_length,label=f"Time: 0:00 / {self.format_time(song_length)}")
 
         # Updating the song position slider during playback
         def update_slider():
             if mixer.music.get_busy():
                 current_position = mixer.music.get_pos() // 1000  # in seconds
                 self.position_slider.set(current_position)
-                self.position_slider.config(label=f"Position {self.format_time(current_position)} / {self.format_time(self.position_slider['to'])}")
+                self.position_slider.config(label=f"Time: {self.format_time(current_position)} / {self.format_time(self.position_slider['to'])}")
                 self.after(1000, update_slider)  # Update every second
             else:
                 # Song has finished, resetting the slider and label
                 self.position_slider.set(0)
-                self.position_slider.config(label=f"Position 0:00 / {self.format_time(self.position_slider['to'])}")
+                self.position_slider.config(label=f"0:00 / {self.format_time(self.position_slider['to'])}")
 
         update_slider()
     def format_time(self, seconds):
@@ -278,7 +278,7 @@ root.wm_title("MusicMate")
 # root.mainloop()
 
 
-img = PhotoImage(file="./Assets/music.gif")
+img = PhotoImage(file="./Assets/music.png")
 next_ = PhotoImage(file="./Assets/next.gif")
 prev = PhotoImage(file="./Assets/previous.gif")
 play = PhotoImage(file="./Assets/play.gif")
