@@ -28,7 +28,10 @@ class Player(tk.Frame): # tk.frame -> similar to root
         self.control_widget()
         if self.playList:
             last_played_song = self.load_last_played_song()
-            self.current = self.playList.index(last_played_song)
+            if last_played_song and last_played_song in self.playList:
+                self.current = self.playList.index(last_played_song)
+            else:
+                self.current = 0
         else:
             last_played_song = self.playList[0] if self.playList else None
             self.current = 0
@@ -46,6 +49,9 @@ class Player(tk.Frame): # tk.frame -> similar to root
         if os.path.exists("songList.dat"):
             with open("songList.dat", "rb") as f:
                 self.playList = pickle.load(f)
+
+            if not self.playList:
+                self.retrieve_songs(["Happy"])
         else:
             self.playList = []
             self.retrieve_songs(["Happy"])
@@ -168,7 +174,7 @@ class Player(tk.Frame): # tk.frame -> similar to root
         mood_folders = {
         'Happy': './Music/Happy',  
         'Meditation': './Music/Meditation',
-        'Sad': './Music/Happy',
+        'Sad': './Music/Sad',
         'Energetic': './Music/Relaxed'
         }
 
@@ -219,11 +225,13 @@ class Player(tk.Frame): # tk.frame -> similar to root
         self.list.itemconfigure(self.current+1,bg="white",fg="#262626")
         self.play_song()
     def next_song(self):
+        self.list.itemconfigure(self.current, bg="#f5f5f5",fg="#262626")
         if self.current<(len(self.playList)-1):
             self.current +=1
+            # self.list.itemconfigure(self.current-1, bg="blue",fg="white")
         else:
             self.current = 0
-        self.list.itemconfigure(self.current-1, bg="white",fg="#262626")
+        self.list.itemconfigure(self.current, bg="blue",fg="#f5f5f5")
         self.play_song()
     def change_volume(self,event=None):
         self.v = self.volume.get()
@@ -251,7 +259,7 @@ class Player(tk.Frame): # tk.frame -> similar to root
 
         # Updating the song position slider during playback
         def update_slider():
-            if mixer.music.get_busy():
+            if mixer.music.get_busy() and mixer.music.get_pos() >= 0:
                 current_position = mixer.music.get_pos() // 1000  # in seconds
                 self.position_slider.set(current_position)
                 self.position_slider.config(label=f"Time: {self.format_time(current_position)} / {self.format_time(self.position_slider['to'])}")
@@ -259,7 +267,8 @@ class Player(tk.Frame): # tk.frame -> similar to root
             else:
                 # Song has finished, resetting the slider and label
                 self.position_slider.set(0)
-                self.position_slider.config(label=f"0:00 / {self.format_time(self.position_slider['to'])}")
+                self.position_slider.config(label=f"Time: 0:00 / {self.format_time(self.position_slider['to'])}")
+                self.after(1000, update_slider)  # Update every second
 
         update_slider()
     def format_time(self, seconds):
