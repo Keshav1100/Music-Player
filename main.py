@@ -175,7 +175,7 @@ class Player(tk.Frame): # tk.frame -> similar to root
         'Happy': './Music/Happy',  
         'Meditation': './Music/Meditation',
         'Sad': './Music/Sad',
-        'Energetic': './Music/Relaxed'
+        'Energetic': './Music/Energetic'
         }
 
         selected_mood = self.selected_mood.get()
