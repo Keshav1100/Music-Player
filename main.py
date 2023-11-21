@@ -100,12 +100,11 @@ class Player(tk.Frame): # tk.frame -> similar to root
         # Mood Options
         mood_options = ['Happy', 'Meditation',"Study", 'Sad', 'Energetic',"Custom"]
         self.selected_mood = tk.StringVar(self.controls)
-        self.selected_mood.set(mood_options[0])  # Set the default mood
-        self.selected_mood.trace('w', self.retrieve_songs)  # Call function when mood changes
+        self.selected_mood.set(mood_options[0])  # -> Setting the default mood
+        self.selected_mood.trace('w', self.retrieve_songs)  # -> Calling function when mood changes
 
-        # Create and place the Mood dropdown
+        # Creating and place the Mood dropdown
         self.mood_dropdown = tk.OptionMenu(self.controls, self.selected_mood, *mood_options)
-        # self.mood_dropdown["text"] = "Mood"
         self.mood_dropdown.config(bg="green", fg="#f5f5f5", font=10)
         self.mood_dropdown.grid(row=0, column=0, padx=10)
 
@@ -138,29 +137,28 @@ class Player(tk.Frame): # tk.frame -> similar to root
         # Sleep Timer Dropdown
         timer_options = ["15 sec",'30 sec', '45 sec', '60 sec']
         self.selected_timer = tk.StringVar(self.controls)
-        self.selected_timer.set(timer_options[0])  # Set the default timer
+        self.selected_timer.set(timer_options[0])  # Setting the default timer
         self.timer_dropdown = tk.OptionMenu(self.controls, self.selected_timer, *timer_options)
         self.timer_dropdown.config(bg="green", fg="#f5f5f5", font=10)
         self.timer_dropdown.grid(row=0, column=5, padx=10)
 
-        # Bind the function to close the application after the selected time
+        # Binding the function to close the application after the selected time
         self.selected_timer.trace('w', self.set_sleep_timer)
     def set_sleep_timer(self, *args):
-        selected_time = int(self.selected_timer.get().split()[0])  # Extract the time in seconds
-        self.after(selected_time * 1000, self.close_application)  # Close the application after the selected time
+        selected_time = int(self.selected_timer.get().split()[0])  # Extracting the time in seconds
+        self.after(selected_time * 1000, self.close_application)  # Closing the application after the selected time
         
     def close_application(self):
         self.save_last_played_song(self.playList[self.current])
 
-        # Close the Tkinter application
+        # Closing the Tkinter application
         self.master.destroy()
 
-        # Shut down the computer
-        os.system(f"shutdown /s /t 1")  # /s for shutdown, /t specifies the time delay in seconds (1 second in this case)
+        # Shutting down the computer
+        os.system(f"shutdown /s /t 1")
     def trackList_widgets(self):
         self.scrollBar = tk.Scrollbar(self.trackPlayList,orient=tk.VERTICAL)
         self.scrollBar.grid(row=0,column=1,rowspan=5,sticky="ns")
-
         self.list = tk.Listbox(self.trackPlayList,selectmode = tk.SINGLE,yscrollcommand = self.scrollBar.set,selectbackground = "blue")
         self.enumerateSongs()
         self.list.config(height = 22)
@@ -229,7 +227,6 @@ class Player(tk.Frame): # tk.frame -> similar to root
         self.list.itemconfigure(self.current, bg="#f5f5f5",fg="#262626")
         if self.current<(len(self.playList)-1):
             self.current +=1
-            # self.list.itemconfigure(self.current-1, bg="blue",fg="white")
         else:
             self.current = 0
         self.list.itemconfigure(self.current, bg="blue",fg="#f5f5f5")
@@ -253,7 +250,6 @@ class Player(tk.Frame): # tk.frame -> similar to root
         self.list.itemconfigure(self.current,bg="#262626",fg="#f5f5f5")
         mixer.music.play()
         
-        
         # Setting the slider range based on the song length
         song_length = mixer.Sound(self.playList[self.current]).get_length()
         self.position_slider.config(to=song_length,label=f"Time: 0:00 / {self.format_time(song_length)}")
@@ -264,12 +260,12 @@ class Player(tk.Frame): # tk.frame -> similar to root
                 current_position = mixer.music.get_pos() // 1000  # in seconds
                 self.position_slider.set(current_position)
                 self.position_slider.config(label=f"Time: {self.format_time(current_position)} / {self.format_time(self.position_slider['to'])}")
-                self.after(1000, update_slider)  # Update every second
+                self.after(1000, update_slider)  # Updating every second
             else:
                 # Song has finished, resetting the slider and label
                 self.position_slider.set(0)
                 self.position_slider.config(label=f"Time: 0:00 / {self.format_time(self.position_slider['to'])}")
-                self.after(1000, update_slider)  # Update every second
+                self.after(1000, update_slider)  # Updating every second
 
         update_slider()
     def format_time(self, seconds):
