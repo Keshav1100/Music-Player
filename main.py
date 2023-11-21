@@ -98,7 +98,7 @@ class Player(tk.Frame): # tk.frame -> similar to root
     def control_widget(self):
 
         # Mood Options
-        mood_options = ['Happy', 'Meditation', 'Sad', 'Energetic',"Custom"]
+        mood_options = ['Happy', 'Meditation',"Study", 'Sad', 'Energetic',"Custom"]
         self.selected_mood = tk.StringVar(self.controls)
         self.selected_mood.set(mood_options[0])  # Set the default mood
         self.selected_mood.trace('w', self.retrieve_songs)  # Call function when mood changes
@@ -175,7 +175,8 @@ class Player(tk.Frame): # tk.frame -> similar to root
         'Happy': './Music/Happy',  
         'Meditation': './Music/Meditation',
         'Sad': './Music/Sad',
-        'Energetic': './Music/Energetic'
+        'Energetic': './Music/Energetic',
+        'Study': './Music/Study',
         }
 
         selected_mood = self.selected_mood.get()
